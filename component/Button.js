@@ -68,13 +68,14 @@ export default class Button extends Component {
   }
 
   render() {
+    const {color} = this.props;
     return (
       <Animated.View
         style={{
           width: 200,
           height: 200,
           borderRadius: 100,
-          backgroundColor: 'rgba(255,223,0,0.5)',
+          backgroundColor: color,
           opacity: this.state.opacity,
           transform: [{scale: this.state.animated}],
         }}>
@@ -83,7 +84,7 @@ export default class Button extends Component {
             width: 200,
             height: 200,
             borderRadius: 100,
-            backgroundColor: 'rgba(255,223,0,0.5)',
+            backgroundColor: color,
             opacity: this.state.opacityA,
             transform: [{scale: this.state.animatedA}],
           }}>
@@ -92,7 +93,7 @@ export default class Button extends Component {
               width: 200,
               height: 200,
               borderRadius: 100,
-              backgroundColor: 'rgb(255,223,0)',
+              backgroundColor: color,
               opacity: this.state.opacityB,
               transform: [{scale: this.state.animatedB}],
             }}></Animated.View>

@@ -20,12 +20,9 @@ import Button from './component/Button';
 import Tts from 'react-native-tts';
 class App extends Component {
   state = {
-    pitch: '',
     error: '',
-    end: '',
     started: '',
     results: '',
-    partialResults: [],
     resp: '',
     rep: false,
   };
@@ -34,11 +31,8 @@ class App extends Component {
     super(props);
     //Setting callbacks for the process status
     Voice.onSpeechStart = this.onSpeechStart;
-    Voice.onSpeechEnd = this.onSpeechEnd;
     Voice.onSpeechError = this.onSpeechError;
     Voice.onSpeechResults = this.onSpeechResults;
-    Voice.onSpeechPartialResults = this.onSpeechPartialResults;
-    Voice.onSpeechVolumeChanged = this.onSpeechVolumeChanged;
   }
 
   _talkAi = async (res) => {
@@ -63,7 +57,6 @@ class App extends Component {
   _getAiResponse = async (q) => {
     console.log(q);
     let qu = q.toString().replace(' ', '+');
-    //console.log(qu);
     let json = '';
     try {
       let response = await fetch('http://192.168.42.75:8000/ai/?q=' + qu);
@@ -88,19 +81,14 @@ class App extends Component {
     });
   };
 
-  onSpeechEnd = (e) => {
-    //Invoked when SpeechRecognizer stops recognition
-    console.log('onSpeechEnd: ', e);
-    this.setState({
-      end: '√',
-    });
-  };
-
   onSpeechError = (e) => {
     //Invoked when an error occurs.
     console.log('onSpeechError: ', e);
     this.setState({
       error: JSON.stringify(e),
+    });
+    this.setState({
+      results: 'My apologies, I am not available now',
     });
   };
 
@@ -114,29 +102,12 @@ class App extends Component {
     this.setState({rep: !this.state.rep});
   };
 
-  onSpeechPartialResults = (e) => {
-    //Invoked when any results are computed
-    console.log('onSpeechPartialResults: ', e);
-    this.setState({
-      partialResults: e.value,
-    });
-  };
-
-  onSpeechVolumeChanged = (e) => {
-    console.log('onSpeechVolumeChanged: ', e);
-    this.setState({
-      pitch: e.value,
-    });
-  };
-
   _startRecognizing = async () => {
     Tts.stop();
     this.setState({
-      pitch: '',
       error: '',
       started: '',
       results: [],
-      partialResults: [],
       end: '',
     });
 
@@ -149,6 +120,9 @@ class App extends Component {
   };
 
   render() {
+    const color = !this.state.results
+      ? 'rgba(255,223,0,0.9)'
+      : 'rgba(0,223,0,0.9)';
     return (
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
@@ -170,11 +144,17 @@ class App extends Component {
                 alignItems: 'center',
                 bottom: 0,
               }}>
-              <Button />
+              <Button color={color} />
               <TouchableHighlight
                 onPress={this._startRecognizing}
-                underlayColor="gold"
-                style={styles.btn}>
+                underlayColor={color}
+                style={[
+                  styles.btn,
+                  {
+                    borderColor: color,
+                    backgroundColor: color,
+                  },
+                ]}>
                 <Image
                   style={styles.button}
                   source={require('./assets/png/2x/outline_mic_none_black_24dp.png')}
@@ -201,8 +181,6 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 50,
     borderWidth: 10,
-    borderColor: 'rgba(255,223,0,0.9)',
-    backgroundColor: 'rgba(255,223,0,0.9)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -229,6 +207,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 1,
     marginTop: 30,
+    margin: 10,
   },
 });
 export default App;
