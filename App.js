@@ -17,7 +17,9 @@ import {
 } from 'react-native';
 import Voice from 'react-native-voice';
 import Button from './component/Button';
+import {API} from './component/Api';
 import Tts from 'react-native-tts';
+
 class App extends Component {
   state = {
     error: '',
@@ -58,8 +60,9 @@ class App extends Component {
     console.log(q);
     let qu = q.toString().replace(' ', '+');
     let json = '';
+    console.log(API);
     try {
-      let response = await fetch('http://192.168.42.75:8000/ai/?q=' + qu);
+      let response = await fetch(API + qu);
       json = await response.json();
     } catch (error) {
       console.error(error);
