@@ -1,1 +1,1 @@
-export const API = 'http://192.168.42.75:8000/ai/?q=';
+export const API = '*:8000/ai/?q='; //Replace it with Dudoo_api
